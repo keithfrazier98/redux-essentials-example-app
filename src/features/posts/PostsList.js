@@ -2,12 +2,18 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { PostAuthor } from './PostAuthor'
-import { fetchPosts, selectAllPosts } from './postsSlice'
+import {
+  fetchPosts,
+  selectAllPosts,
+  selectPostById,
+  selectPostIds,
+} from './postsSlice'
 import { ReactionButtons } from './ReactionButtons'
 import { TimeAgo } from './TimeAgo'
 import { Spinner } from '../../components/Spinner'
 
-let PostExcerpt = ({ post }) => {
+let PostExcerpt = ({ postId }) => {
+  const post = useSelector((state) => selectPostById(state, postId))
   return (
     <article className="post-excerpt">
       <h3>{post.title}</h3>
@@ -25,14 +31,14 @@ let PostExcerpt = ({ post }) => {
   )
 }
 
-// Using a react memo will ensure a post excerpt component will only render 
-// when the props actually change. By default the children of a parent all re-render 
-// when a parent does. Simply clicking a reaction would then re-render every post. 
-PostExcerpt = React.memo(PostExcerpt)
+// Using a react memo will ensure a post excerpt component will only render
+// when the props actually change. By default the children of a parent all re-render
+// when a parent does. Simply clicking a reaction would then re-render every post.
+// PostExcerpt = React.memo(PostExcerpt)
 
 export const PostsList = () => {
   const dispatch = useDispatch()
-  const posts = useSelector(selectAllPosts)
+  const orderedPostIds = useSelector(selectPostIds)
 
   const postsStatus = useSelector((state) => state.posts.status)
   const error = useSelector((state) => state.posts.error)
@@ -48,13 +54,8 @@ export const PostsList = () => {
   if (postsStatus === 'loading') {
     content = <Spinner text="Loading..." />
   } else if (postsStatus === 'succeeded') {
-    // Sort posts in reverse chronological order by datetime string
-    const orderedPosts = posts
-      .slice()
-      .sort((a, b) => b.date.localeCompare(a.date))
-
-    content = orderedPosts.map((post) => (
-      <PostExcerpt key={post.id} post={post} />
+    content = orderedPostIds.map((postId) => (
+      <PostExcerpt key={postId} postId={postId} />
     ))
   } else if (postsStatus === 'failed') {
     content = <div>{error}</div>
