@@ -212,6 +212,7 @@ export const handlers = [
       numNotifications,
       db
     )
+    console.log(notifications)
 
     return res(ctx.delay(ARTIFICIAL_DELAY_MS), ctx.json(notifications))
   }),
@@ -297,6 +298,6 @@ function generateRandomNotifications(since, numNotifications, db) {
       user: user.id,
     }
   })
-
+  console.log(notifications)
   return notifications
 }

@@ -7,7 +7,7 @@ import { ReactionButtons } from './ReactionButtons'
 import { TimeAgo } from './TimeAgo'
 import { Spinner } from '../../components/Spinner'
 
-const PostExcerpt = ({ post }) => {
+let PostExcerpt = ({ post }) => {
   return (
     <article className="post-excerpt">
       <h3>{post.title}</h3>
@@ -24,6 +24,11 @@ const PostExcerpt = ({ post }) => {
     </article>
   )
 }
+
+// Using a react memo will ensure a post excerpt component will only render 
+// when the props actually change. By default the children of a parent all re-render 
+// when a parent does. Simply clicking a reaction would then re-render every post. 
+PostExcerpt = React.memo(PostExcerpt)
 
 export const PostsList = () => {
   const dispatch = useDispatch()
