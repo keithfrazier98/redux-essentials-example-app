@@ -32,7 +32,8 @@ function App() {
           />
           <Route exact path="/posts/:postId" component={SinglePostPage} />
           <Route exact path="/editPost/:postId" component={EditPostForm} />
-
+          <Route exact path="/users" component={UsersList} />
+          <Route exact path="/users/:userId" component={UserPage} />
           <Redirect to="/" />
         </Switch>
       </div>
