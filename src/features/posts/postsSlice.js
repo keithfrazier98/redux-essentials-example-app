@@ -112,6 +112,8 @@ export const {
   // Pass in a selector that returns the posts slice of state
 } = postsAdapter.getSelectors((state) => state.posts)
 
+// createSelector will create a memoized selector that will only cause 
+// a rerender when the states in the dep array change
 export const selectPostByUser = createSelector(
   [selectAllPosts, (state, userId) => userId],
   (posts, userId) => posts.filter((post) => post.user === userId)

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { selectAllUsers } from '../users/usersSlice'
 
 import { postAdded } from './postsSlice'
 import { addNewPost } from './postsSlice'
@@ -16,7 +17,7 @@ export const AddPostForm = () => {
   const onContentChanged = (e) => setContent(e.target.value)
   const onAuthorChanged = (e) => setUserId(e.target.value)
 
-  const users = useSelector((state) => state.users)
+  const users = useSelector(selectAllUsers)
 
   const canSave =
     [title, content, userId].every(Boolean) && addRequestStatus === 'idle'
@@ -37,7 +38,7 @@ export const AddPostForm = () => {
     }
   }
 
-  const usersOptions = users.map((user) => (
+  const usersOptions = users?.map((user) => (
     <option key={user.id} value={user.id}>
       {user.name}
     </option>
