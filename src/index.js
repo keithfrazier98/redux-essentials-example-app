@@ -13,6 +13,7 @@ async function start() {
 
   // fetch users without using the react hook (needs manualy unsunscribe, caches permanently)
   store.dispatch(extendedApiSlice.endpoints.getUsers.initiate())
+  
   ReactDOM.render(
     <React.StrictMode>
       <Provider store={store}>

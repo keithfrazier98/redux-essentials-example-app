@@ -31,6 +31,6 @@ const selectUsersData = createSelector(
 )
 
 export const { selectAll: selectAllUsers, selectById: selectUserById } =
-  usersAdapter.getSelectors((state) => state.users)
+  usersAdapter.getSelectors((state) => selectUsersData(state) ?? initialState)
 
 // export default usersSlice.reducer
