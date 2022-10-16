@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 import { selectUserById } from '../users/usersSlice'
-import { selectAllPosts, selectPostByUser } from '../posts/postsSlice'
 import { createSelector } from '@reduxjs/toolkit'
 import { useGetPostsQuery } from '../api/apiSlice'
 

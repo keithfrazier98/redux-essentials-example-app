@@ -1,13 +1,6 @@
-import React, { useEffect, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { PostAuthor } from './PostAuthor'
-import {
-  fetchPosts,
-  selectAllPosts,
-  selectPostById,
-  selectPostIds,
-} from './postsSlice'
 import { ReactionButtons } from './ReactionButtons'
 import { TimeAgo } from './TimeAgo'
 import { Spinner } from '../../components/Spinner'
