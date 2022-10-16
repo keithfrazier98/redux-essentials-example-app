@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { PostAuthor } from './PostAuthor'
@@ -11,20 +11,20 @@ import {
 import { ReactionButtons } from './ReactionButtons'
 import { TimeAgo } from './TimeAgo'
 import { Spinner } from '../../components/Spinner'
+import { useGetPostsQuery } from '../api/apiSlice'
 
-let PostExcerpt = ({ postId }) => {
-  const post = useSelector((state) => selectPostById(state, postId))
+let PostExcerpt = ({ post }) => {
   return (
     <article className="post-excerpt">
-      <h3>{post.title}</h3>
+      <h3>{post?.title}</h3>
       <div>
-        <PostAuthor userId={post.user} />
-        <TimeAgo timestamp={post.date} />
+        <PostAuthor userId={post?.user} />
+        <TimeAgo timestamp={post?.date} />
       </div>
-      <p className="post-content">{post.content.substring(0, 100)}</p>
+      <p className="post-content">{post?.content.substring(0, 100)}</p>
 
       <ReactionButtons post={post} />
-      <Link to={`/posts/${post.id}`} className="button muted-button">
+      <Link to={`/posts/${post?.id}`} className="button muted-button">
         View Post
       </Link>
     </article>
@@ -37,27 +37,31 @@ let PostExcerpt = ({ postId }) => {
 // PostExcerpt = React.memo(PostExcerpt)
 
 export const PostsList = () => {
-  const dispatch = useDispatch()
-  const orderedPostIds = useSelector(selectPostIds)
+  const {
+    data: posts,
+    isError,
+    isSuccess,
+    isLoading,
+    error,
+  } = useGetPostsQuery()
 
-  const postsStatus = useSelector((state) => state.posts.status)
-  const error = useSelector((state) => state.posts.error)
-
-  useEffect(() => {
-    if (postsStatus === 'idle') {
-      dispatch(fetchPosts())
-    }
-  }, [postsStatus, dispatch])
-
+  const sortedPosts = useMemo(() => {
+    const sortedPosts = posts?.slice()
+    // Sort posts in descending chronological order
+    sortedPosts?.sort((a, b) => b.date.localeCompare(a.date))
+    return sortedPosts
+  }, [posts])
+  
   let content
-
-  if (postsStatus === 'loading') {
+  
+  if (isLoading) {
     content = <Spinner text="Loading..." />
-  } else if (postsStatus === 'succeeded') {
-    content = orderedPostIds.map((postId) => (
-      <PostExcerpt key={postId} postId={postId} />
+  } else if (isSuccess) {
+    console.log(sortedPosts);
+    content = sortedPosts.map((post) => (
+      <PostExcerpt key={post.id} post={post} />
     ))
-  } else if (postsStatus === 'failed') {
+  } else if (isError) {
     content = <div>{error}</div>
   }
 
