@@ -11,7 +11,8 @@ import {
 
 export const NotificationsList = () => {
   const dispatch = useDispatch()
-  const notifications = useSelector(selectAllNotifications)
+  const { data: notifications = [] } = useGetNotificationsQuery()
+  const notificationsMetadata = useSelector(selectMetadataEntities)
   const users = useSelector(selectAllUsers)
 
   useLayoutEffect(() => {
@@ -25,8 +26,9 @@ export const NotificationsList = () => {
       name: 'Unknown User',
     }
 
+    const metadata = notificationsMetadata[notification.id]
     const notificationClassname = classNames('notification', {
-      new: notification.isNew,
+      new: metadata.isNew,
     })
 
     return (
