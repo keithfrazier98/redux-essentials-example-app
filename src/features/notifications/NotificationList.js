@@ -6,7 +6,8 @@ import { selectAllUsers } from '../users/usersSlice'
 
 import {
   allNotificationsRead,
-  selectAllNotifications,
+  selectMetadataEntities,
+  useGetNotificationsQuery,
 } from './notificationsSlice'
 
 export const NotificationsList = () => {

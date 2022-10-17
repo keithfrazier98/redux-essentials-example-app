@@ -1,8 +1,5 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
 import { useAddReactionMutation } from '../api/apiSlice'
-
-import { reactionAdded } from './postsSlice'
 
 const reactionEmoji = {
   thumbsUp: '👍',

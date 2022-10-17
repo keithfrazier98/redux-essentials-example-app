@@ -1,11 +1,11 @@
 import {
   createSlice,
-  createAsyncThunk,
   createEntityAdapter,
   createAction,
+  isAnyOf,
+  createSelector,
 } from '@reduxjs/toolkit'
 
-import { client } from '../../api/client'
 import { forceGenerateNotifications } from '../../api/server'
 import { apiSlice } from '../api/apiSlice'
 
@@ -89,20 +89,6 @@ export const fetchNotificationsWebsocket = () => (dispatch, getState) => {
   forceGenerateNotifications(latestTimestamp)
 }
 
-export const fetchNotifications = createAsyncThunk(
-  'notifications/fetchNotifications',
-  async (_, { getState }) => {
-    const allNotifications = selectAllNotifications(getState())
-    console.log(allNotifications)
-    const [latestNotification] = allNotifications
-    const latestTimestamp = latestNotification ? latestNotification.date : ''
-    const response = await client.get(
-      `/fakeApi/notifications?since=${latestTimestamp}`
-    )
-    return response.data
-  }
-)
-
 const notificationsSlice = createSlice({
   name: 'notifications',
   initialState: notificationsAdapter.getInitialState(),
@@ -115,13 +101,6 @@ const notificationsSlice = createSlice({
   },
   extraReducers(builder) {
     builder
-      .addCase(fetchNotifications.fulfilled, (state, action) => {
-        notificationsAdapter.upsertMany(state, action.payload)
-        Object.values(state.entities).forEach((notification) => {
-          // Any notifications we've read are no longer new
-          notification.isNew = !notification.read
-        })
-      })
       .addMatcher(matchNotificationsReceived, (state, action) => {
         // Add client-side metadata for tracking new notifications
         const notificationsMetadata = action.payload.map((notification) => ({
